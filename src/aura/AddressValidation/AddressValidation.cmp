@@ -1,0 +1,168 @@
+<!-- 
+ - Copyright (c) 2020, salesforce.com, inc.
+ - All rights reserved.
+ - SPDX-License-Identifier: BSD-3-Clause
+ - For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause 
+ -->
+
+<aura:component implements="lightning:availableForFlowScreens" access="global" 
+                controller="AddressValidationController" >
+    <!-- Data Attributes -->
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="width" type="String"/>
+    <aura:attribute name="currentLatitude" type="String" />
+    <aura:attribute name="currentLongitude" type="String" />
+    <aura:attribute name="location" type="String" default=""/>
+    <aura:attribute name="predictions" type="List" default="[]"/> <!-- List of suggestions returned by the Google Place Autocomplete API -->
+    <aura:attribute name="searchTimeout" type="String" />
+    <aura:attribute name="searching" type="Boolean" default="false" /> <!-- Search status for lightning:input -->
+    <aura:attribute name="UUID" type="String" default="" /> <!-- Stores the temporary UUID Session Token for the Google API -->
+    <aura:attribute name="apiError" type="String" />
+
+    <!-- Validation Attributes -->
+    <aura:attribute name="isRequired" type="Boolean" default="false" required="true" />
+    <aura:attribute name="fieldsRequired" type="Boolean" default="false" required="true" />
+    <aura:attribute name="locationSelected" type="Boolean" default="false" />
+    <aura:attribute name="validate" type="Aura.Action" description="Custom validation function to run when the flow is navigated to the next screen. The function will evaluate if the field is required and populated"/>
+    
+    <!-- Map Attributes -->
+    <aura:attribute name="mapMarkers" type="Object"/> <!-- Markers object to show on lightning:map -->
+    <aura:attribute name="markerAvailable" type="Boolean" default="false"/> <!-- Bool primarily used to re-render the map component -->
+    <aura:attribute name="mapLoadError" type="String" /> <!-- Error message when map cannot load -->
+    
+    <!-- Component Layout Attributes -->
+    <aura:attribute name="titleLabel" type="String" access="global" default="c.Title" />
+    <aura:attribute name="showTitle" type="Boolean" access="global" default="true" required="true" />
+    <aura:attribute name="showAddressFields" type="Boolean" access="global" default="true" required="true" />
+    <aura:attribute name="showCountyField" type="Boolean" access="global" default="false" />
+    <aura:attribute name="showMap" type="Boolean" access="global" default="true" required="true" />
+    
+    <!-- Address Input/Output Attributes -->
+    <aura:attribute name="placeId" type="String" access="global" /> <!-- ChIJOVqTrcWvEmsRmtsU1SYcW6w -->
+    <aura:attribute name="latitude" type="String" access="global" />
+    <aura:attribute name="longitude" type="String" access="global" />
+    <aura:attribute name="premise" type="String" access="global" /> <!-- Stores 'Property Name' of the land and buildings together -->
+    <aura:attribute name="street_number" type="String" access="global" /> <!-- Stores 'Street Number' -->
+    <aura:attribute name="route" type="String" access="global" /> <!-- Stores 'Street' -->
+    <aura:attribute name="fullStreetAddress" type="String" access="global" />
+    <aura:attribute name="locality" type="String" access="global" /> <!-- Stores 'City' -->
+    <aura:attribute name="administrative_area_level_1" type="String" access="global" /> <!-- Stores the 'Province' or 'State' -->
+    <aura:attribute name="administrative_area_level_2" type="String" access="global" /> <!-- Stores the 'County' -->
+    <aura:attribute name="postal_code" type="String" access="global" />
+    <aura:attribute name="country" type="String" access="global" />
+    <aura:attribute name="formattedAddress" type="String" access="global" />
+    
+    <!-- Handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <lightning:flexipageRegionInfo width="{!v.width}"/>
+    
+    <aura:if isTrue="{!v.showTitle == true}">
+        <div class="slds-media slds-m-bottom_small slds-media_center">
+            <div class="slds-media__figure">
+                <lightning:icon iconName="standard:location" size="medium" variant="slds-icon-inverse"></lightning:icon>
+            </div>
+            <div class="slds-media__body">
+                <div class="slds-card__header-link slds-text-heading_small">{!v.title}</div>
+            </div>
+            <div class="slds-media__figure slds-media__figure_reverse"></div>
+        </div>
+    </aura:if>
+    <lightning:layout multipleRows="true" pullToBoundary="medium">
+        <aura:if isTrue="{!empty(v.apiError)}">
+            <lightning:layoutItem padding="horizontal-medium" size="12">
+                <div id="locationSearch" class="slds-is-relative">
+                    <lightning:input label="{!$Label.c.Input_Address}"
+                                    type="search"
+                                    isLoading="{!v.searching}"
+                                    name="location"
+                                    class="slds-p-bottom_small"
+                                    aura:id="locationText"
+                                    id="locationText"
+                                    value="{!v.location}"
+                                    onchange="{!c.onAddressInput}"
+                                    required="{!v.isRequired}"
+                                    placeholder="{!$Label.c.Input_Address_Placeholder}"/>
+                    
+                    <!-- When prediction results are found -->
+                    <aura:if isTrue="{!v.predictions.length > 0}">
+                        <ul class="">
+                            <aura:iteration items="{!v.predictions}" var="prediction">
+                                <li class="slds-listbox__item">
+                                    <a onclick="{!c.onAddressSelect}" ontouchstart="{!c.onAddressSelect}" data-placeid="{!prediction.place_id}" class="slds-text-link_reset">
+                                        <div class="slds-p-horizontal_x-small slds-p-vertical_xx-small">
+                                            {!prediction.description}
+                                        </div>
+                                    </a>
+                                </li>
+                            </aura:iteration>
+                            <!-- Attribution to Google in case map is not shown -->
+                            <li class="slds-text-align_right">
+                                <img id="poweredByGoogle" src="{!$Resource.poweredByGoogle}" />
+                            </li>
+                        </ul>
+                        <aura:set attribute="else">
+                            <aura:if isTrue="{!v.predictions == null}">
+                                <ul>
+                                    <li class="slds-listbox__item">
+                                        <div class="slds-p-horizontal_x-small slds-p-vertical_xx-small">
+                                            No Results Found
+                                        </div>
+                                    </li>
+                                </ul>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </lightning:layoutItem>
+            <aura:set attribute="else">
+                <lightning:layoutItem padding="{!v.showTitle == true ? 'around-small' : ''}" size="12">
+                    <div class="slds-box slds-box_small slds-text-align_center slds-text-title_caps slds-text-color_error">
+                        <div>
+                            <lightning:icon iconName="utility:error" size="small" class="slds-m-right_xx-small" alternativeText="Error!" variant="error"/> {!v.apiError}
+                        </div>
+                    </div>
+                </lightning:layoutItem>
+            </aura:set>
+        </aura:if>
+
+        <aura:if isTrue="{!v.showAddressFields == true}">
+            <!-- Size is 12 if region is small or undetermined, or if region is medium/large and map is off, otherwise it's 6 -->
+            <lightning:layoutItem padding="horizontal-medium" size="{!or(or(v.width == 'SMALL', v.width == null), and(or(v.width == 'MEDIUM', v.width == 'LARGE'), v.showMap == false)) ? 12 : 6}">
+                <lightning:inputAddress aura:id="fullAddress"
+                                        streetLabel="{!$Label.c.Street}"
+                                        cityLabel="{!$Label.c.City}"
+                                        countryLabel="{!$Label.c.Country}"
+                                        provinceLabel="{!$Label.c.Province}"
+                                        postalCodeLabel="{!$Label.c.Postal_Code}"
+                                        street="{!v.fullStreetAddress}"
+                                        city="{!v.locality}"
+                                        country="{!v.country}"
+                                        province="{!v.administrative_area_level_1}"
+                                        postalCode="{!v.postal_code}"
+                                        />
+                <aura:if isTrue="{!v.showCountyField == true}">
+                    <lightning:input aura:id="countyInput" type="text" label="{!$Label.c.County}" placeholder="County" value="{!v.administrative_area_level_2}" class="slds-p-bottom_small" />
+                </aura:if>
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{! and(v.markerAvailable == true, v.showMap == true)}">
+            <!-- Size is 12 if region is small or undetermined, or if region is medium/large and map is off, otherwise it's 6 -->
+            <lightning:layoutItem padding="horizontal-medium" size="{!or(or(v.width == 'SMALL', v.width == null), and(or(v.width == 'MEDIUM', v.width == 'LARGE'), v.showAddressFields == false)) ? 12 : 6}">
+                <!-- the map component -->
+                <lightning:map aura:id="myMap"
+                            mapMarkers="{! v.mapMarkers }" 
+                            zoomLevel="16" />
+            </lightning:layoutItem>
+        </aura:if>
+        <!-- If there are errors with map loading -->
+        <aura:if isTrue="{! and(and(!empty(v.mapLoadError), v.markerAvailable == false), v.showMap == true)}">
+            <!-- Size is 12 if region is small or undetermined, or if region is medium/large and map is off, otherwise it's 6 -->
+            <lightning:layoutItem padding="horizontal-medium" size="{!or(or(v.width == 'SMALL', v.width == null), and(or(v.width == 'MEDIUM', v.width == 'LARGE'), v.showMap == false)) ? 12 : 6}">
+                <div class="slds-box slds-text-align_center slds-text-title_caps slds-m-top_small slds-text-color_error">
+                    <lightning:icon iconName="utility:error" size="small" class="slds-m-right_xx-small" alternativeText="Error!" variant="error"/> {!v.mapLoadError}
+                </div>
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+</aura:component>

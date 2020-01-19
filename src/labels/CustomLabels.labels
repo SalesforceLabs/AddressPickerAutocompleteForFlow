@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>City</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>City</shortDescription>
+        <value>City</value>
+    </labels>
+    <labels>
+        <fullName>Country</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Country</shortDescription>
+        <value>Country</value>
+    </labels>
+    <labels>
+        <fullName>County</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>County</shortDescription>
+        <value>County</value>
+    </labels>
+    <labels>
+        <fullName>Input_Address</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Input Address</shortDescription>
+        <value>Address</value>
+    </labels>
+    <labels>
+        <fullName>Input_Address_Placeholder</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Input Address Placeholder</shortDescription>
+        <value>Search for Address...</value>
+    </labels>
+    <labels>
+        <fullName>Postal_Code</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Postal Code</shortDescription>
+        <value>Postal Code</value>
+    </labels>
+    <labels>
+        <fullName>Province</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Province</shortDescription>
+        <value>State/Province</value>
+    </labels>
+    <labels>
+        <fullName>Street</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Street</shortDescription>
+        <value>Street</value>
+    </labels>
+    <labels>
+        <fullName>Title</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Title</shortDescription>
+        <value>Address Search</value>
+    </labels>
+</CustomLabels>
