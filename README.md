@@ -13,4 +13,4 @@ This component helps you, and your users make filling in addresses a breeze! It 
 https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000FKAgjUAH
 
 ## Documentation
-- [Setup Guide (v1.11 - October 2019)](https://appexchange.salesforce.com/servlet/servlet.FileDownload?file=00P3A00000l5Bh7UAE)
+- [Setup Guide](https://salesforce.quip.com/kyF3AzG256XL)
