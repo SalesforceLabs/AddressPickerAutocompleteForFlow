@@ -13,19 +13,37 @@
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
+        <members>Address_Picker_Autocomplete</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
         <members>PlacesAPI__c.key__c</members>
         <name>CustomField</name>
     </types>
     <types>
+        <members>API_Unknown_Error</members>
         <members>City</members>
         <members>Country</members>
+        <members>Country_Filter_Format</members>
+        <members>Country_Filter_Limit</members>
         <members>County</members>
+        <members>Current_Location</members>
+        <members>Default_Address</members>
+        <members>Enable_Location_Tracking</members>
+        <members>Filled_Address_Fields_Required</members>
         <members>Input_Address</members>
         <members>Input_Address_Placeholder</members>
+        <members>Please_contact_your_admin</members>
+        <members>Position_Unavailable</members>
         <members>Postal_Code</members>
         <members>Province</members>
+        <members>Request_Timed_Out</members>
+        <members>Search_and_Address_Field_Required</members>
+        <members>Search_and_All_Address_Fields_Required</members>
+        <members>Selected_Address</members>
         <members>Street</members>
         <members>Title</members>
+        <members>Unknown_Error</members>
         <name>CustomLabel</name>
     </types>
     <types>
@@ -37,16 +55,21 @@
         <name>CustomObject</name>
     </types>
     <types>
+        <members>Address_Picker_Autocomplete_Home</members>
+        <members>Address_Picker_Autocomplete_UtilityBar</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
         <members>Find_Address_Flow</members>
         <name>Flow</name>
     </types>
     <types>
-        <members>qsyd_googleapis</members>
+        <members>QSYD_googleapis</members>
         <name>RemoteSiteSetting</name>
     </types>
     <types>
         <members>poweredByGoogle</members>
         <name>StaticResource</name>
     </types>
-    <version>47.0</version>
+    <version>50.0</version>
 </Package>

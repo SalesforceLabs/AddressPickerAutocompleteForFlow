@@ -3,7 +3,7 @@
                         description="To update the title text of the component use the 'Component Title Label' field instead. 
                                     This is kept for retrospective purposes of older versions prior to v1.8" />
     <design:attribute name="titleLabel" label="Component Title Label" 
-                        description="The custom label to use for the component title. The packaged labels will be 'DV_Flow_AP.LabelName' but if you want to use your own without a namespace, use 'c.LabelName'." />
+                        description="The custom label to use for the component title. The packaged labels will be 'LabelName' but if you want to use your own without a namespace, use 'c.LabelName'." />
     <design:attribute name="showTitle" label="Show Title" 
                         description="Show the title text" />
     <design:attribute name="showAddressFields" label="Show Address Fields" 
@@ -32,4 +32,7 @@
     <design:attribute name="country" label="Country" />
     <design:attribute name="formattedAddress" label="Full Formatted Address" 
                         description="Location text as seen in the search field after selecting a suggestion" />
+
+    <design:attribute name="countryFilters" label="Country Filters"
+                        description="Comma separated list of Countries to filter the search. Up to a maximum of 5 countries. E.g. US,FR,GB,AU,NZ" />
 </design:component>

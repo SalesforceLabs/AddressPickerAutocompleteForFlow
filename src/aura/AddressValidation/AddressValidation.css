@@ -1,16 +1,8 @@
-/*
- * Copyright (c) 2020, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- */
- 
- .THIS #locationSearch > ul {
+.THIS #locationSearch > ul {
     display: none;
     border: 1px solid rgb(221, 219, 218);
     border-top: 0;
     position: absolute;
-    /* width: calc(100% - 2rem); */
     width: 100%;
     z-index: 9999;
     background: white;
@@ -26,4 +18,9 @@
 
 .THIS .slds-listbox__item div:hover {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.THIS .slds-map {
+    min-width: 100%;
+    max-height: 400px;
 }

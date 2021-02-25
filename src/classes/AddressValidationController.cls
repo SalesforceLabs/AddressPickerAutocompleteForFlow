@@ -1,11 +1,4 @@
 /*
- * Copyright (c) 2020, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- */
- 
- /*
    Author:         Derrick Vuong
    Company:        Salesforce
    Description:    src/classes/AddressValidationController.cls
@@ -30,6 +23,29 @@ global with sharing class AddressValidationController {
             url += '&location=' + latitude + ',' + longitude + '&radius=1000';
         }
 
+        String response = getResponse(url);
+        return response;
+    }
+    @AuraEnabled
+    global static string getSuggestionsWithFilters(String input, String latitude, String longitude, String sessionToken, String countryFilters) {
+        /* https://developers.google.com/places/web-service/autocomplete#place_types */
+        String countryComponents = '';
+        if(countryFilters != '' && countryFilters != null) {
+            List<String> countries = countryFilters.split(',');
+            for(String country : countries) {
+                countryComponents += countryComponents == '' ? '&components=country:' + country.toLowerCase() : '|country:' + country.toLowerCase();
+            }
+        }
+
+        String url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?'
+            + 'input=' + EncodingUtil.urlEncode(input, 'UTF-8')
+            + '&key=' + getKey()
+            + countryComponents
+            + '&sessiontoken=' + sessionToken;
+        if(latitude != null && longitude != null) {
+            url += '&location=' + latitude + ',' + longitude + '&radius=1000';
+        }
+        System.debug('#### URL' + url);
         String response = getResponse(url);
         return response;
     }

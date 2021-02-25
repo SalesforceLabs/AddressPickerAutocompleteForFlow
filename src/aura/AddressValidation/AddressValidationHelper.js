@@ -1,11 +1,4 @@
 /*
- * Copyright (c) 2020, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- */
- 
- /*
    Author:         Derrick Vuong
    Company:        Salesforce
    Description:    src/aura/AddressValidation/AddressValidationHelper.js
@@ -51,9 +44,14 @@
         cmp.set("v.title", $A.getReference(titleLabel));
     },
     setValidation : function(cmp) {
+        let labels = {
+            SEARCH_AND_ALL_ADDRESS_FIELDS_REQUIRED : $A.get("$Label.c.Search_and_All_Address_Fields_Required"),
+            SEARCH_AND_ADDRESS_FIELD_REQUIRED : $A.get("$Label.c.Search_and_Address_Field_Required"),
+            FILLED_ADDRESS_FIELDS_REQUIRED : $A.get("$Label.c.Filled_Address_Fields_Required"),
+        }
+
         cmp.set('v.validate', function() {
-            let locationSelected = cmp.get("v.locationSelected");
-            
+            // let locationSelected = cmp.get("v.locationSelected");
             let isRequired = cmp.get("v.isRequired");
             let fieldsRequired = cmp.get("v.fieldsRequired");
 
@@ -75,44 +73,43 @@
             })
 
             if(fieldsRequired && isRequired) {
-                console.log("Fields Required and Search Required");
-                console.log("Address Fields: ", addressFields);
-
                 if(locationValue.length > 0 && !addressFieldEmpty) {
                     return { isValid: true };
+                } else {
+                    return { isValid: false, errorMessage: labels.SEARCH_AND_ALL_ADDRESS_FIELDS_REQUIRED };
                 }
-                else {
-                    console.log("Location Value: " + locationValue);
-                    console.log("Location Length: " + locationValue.length);
-                    console.log("Location Length > 0: ", locationValue.length > 0);
-                    console.log("Address Fields Empty: ", addressFieldEmpty);
-                    return { isValid: false, errorMessage: 'All address fields is required. Please search and select a valid location and have all fields filled to proceed.' };
-                }
-            }
-            else if(!fieldsRequired && isRequired) {
+            } else if(!fieldsRequired && isRequired) {
                 if(locationValue.length > 0)
                     return { isValid: true };
                 else
-                    return { isValid: false, errorMessage: 'The address field is required. Please search and select a valid location to proceed.' };
-            }
-            else if(showAddressFields && fieldsRequired) {
+                    return { isValid: false, errorMessage: labels.SEARCH_AND_ADDRESS_FIELD_REQUIRED };
+            } else if(showAddressFields && fieldsRequired) {
                 if(!addressFieldEmpty) 
                     return { isValid: true };
                 else
-                    return { isValid: false, errorMessage: 'All Address fields are required. Please fill in all fields available to proceed.' };
+                    return { isValid: false, errorMessage: labels.FILLED_ADDRESS_FIELDS_REQUIRED };
             }
         })
     },
     initialiseMapData : function(cmp, helper) {
         let lat = cmp.get("v.latitude"), lng = cmp.get("v.longitude");
+        let labels = {
+            SELECTED_ADDRESS : $A.get("$Label.c.Selected_Address"),
+            DEFAULT_ADDRESS : $A.get("$Label.c.Default_Address"),
+            CURRENT_LOCATION : $A.get("$Label.c.Current_Location"),
+            ENABLE_LOCATION_TRACKING : $A.get("$Label.c.Enable_Location_Tracking"),
+            POSITION_UNAVAILABLE : $A.get("$Label.c.Position_Unavailable"),
+            REQUEST_TIMED_OUT : $A.get("$Label.c.Request_Timed_Out"),
+            UNKNOWN_ERROR : $A.get("$Label.c.Unknown_Error")
+        }
 
         if(lat != null && lng != null) {
             let formattedAddress = cmp.get("v.formattedAddress");
             if(formattedAddress) {
-                this.showMap(cmp, lat, lng, 'Selected Address', formattedAddress);
+                this.showMap(cmp, lat, lng, labels.SELECTED_ADDRESS, formattedAddress);
             }
             else {
-                this.showMap(cmp, lat, lng, 'Default Address');
+                this.showMap(cmp, lat, lng, labels.DEFAULT_ADDRESS);
             }
 
             // Set search area around the default latitude and longitude 
@@ -123,7 +120,7 @@
             let geoSuccess = function(position) {
                 /* Get the current users' location if location tracking is enabled */
                 let startPos = position;
-                helper.showMap(cmp, startPos.coords.latitude, startPos.coords.longitude, 'Current Location');
+                helper.showMap(cmp, startPos.coords.latitude, startPos.coords.longitude, labels.CURRENT_LOCATION);
                 
                 /* Set the current latitude and longitude to filter the suggestion API to nearby suggestions only */
                 cmp.set("v.currentLatitude", startPos.coords.latitude);
@@ -133,24 +130,22 @@
             navigator.geolocation.getCurrentPosition(geoSuccess, function (error) {
                 switch(error.code) {
                     case error.PERMISSION_DENIED:
-                        cmp.set("v.mapLoadError", "Allow location tracking to show your current positon")
+                        cmp.set("v.mapLoadError", labels.ENABLE_LOCATION_TRACKING)
                         break;
                     case error.POSITION_UNAVAILABLE:
-                        cmp.set("v.mapLoadError", "Location information is unavailable")
+                        cmp.set("v.mapLoadError", labels.POSITION_UNAVAILABLE)
                         break;
                     case error.TIMEOUT:
-                        cmp.set("v.mapLoadError", "The request to get user location timed out")
+                        cmp.set("v.mapLoadError", labels.REQUEST_TIMED_OUT)
                         break;
                     case error.UNKNOWN_ERROR:
-                        cmp.set("v.mapLoadError", "An unknown error occurred")
+                        cmp.set("v.mapLoadError", labels.UNKNOWN_ERROR)
                         break;
                 }
             });
         }
     },
     showMap : function(cmp, lat, lng, title, description) {
-        // let desc = '<span style="color: red;">' + description + '</span>';
-
         let showMap = cmp.get("v.showMap");
         if(showMap == true) {
             cmp.set("v.markerAvailable", false);
@@ -168,6 +163,10 @@
         }
     },
     startSearch : function(cmp) {
+        let labels = {
+            CONTACT_ADMIN : $A.get("$Label.c.Please_contact_your_admin"),
+            API_UNKNOWN_ERROR : $A.get("$Label.c.API_Unknown_Error"),
+        }
         /* Check if the search timeout exists yet and clear it if exists */
         let searchTimeout = cmp.get('v.searchTimeout');
         if (searchTimeout) {
@@ -183,37 +182,41 @@
                     "input" : cmp.get("v.location"),
                     "latitude" : cmp.get("v.currentLatitude"),
                     "longitude" : cmp.get("v.currentLongitude"),
-                    "sessionToken" : cmp.get("v.UUID")
+                    "sessionToken" : cmp.get("v.UUID"),
+                    "countryFilters" : cmp.get("v.countryFilters")
                 }
 
                 /* Make the server call to get Places Suggestion API results */
                 this.callServer(
                         cmp,
-                        "c.getSuggestions",
+                        "c.getSuggestionsWithFilters",
                         function(response){
                                 let resp = JSON.parse(response);
 
                                 if(resp.status === "OK") {
                                     cmp.set('v.predictions', resp.predictions);
-                                }
-                                else if(resp.error_message) { // If an error message is returned
-                                    cmp.set("v.apiError", resp.error_message + " Please contact the admin.");
-                                }
-                                else if(resp.status == "ZERO_RESULTS") { // If no results found
+                                } else if(resp.error_message) { // If an error message is returned
+                                    cmp.set("v.apiError", resp.error_message + " " + labels.CONTACT_ADMIN);
+                                } else if(resp.status == "ZERO_RESULTS") { // If no results found
                                     cmp.set('v.predictions', null);
-                                }
-                                else { // If an unknown error is returned
-                                    cmp.set("v.apiError", "Failed to get response with Google Places API key. Unknown error.");
+                                } else { // If an unknown error is returned
+                                    cmp.set("v.apiError", labels.API_UNKNOWN_ERROR);
                                 }
                                 cmp.set("v.searching", false);
                             }
-                    ,params);
+                    , params);
                 /* Clear timeout when search is completed */
                 cmp.set('v.searchTimeout', null);
             }), 300); // Wait for 300 ms before sending search request
         cmp.set('v.searchTimeout', searchTimeout);
     },
     getPlaceDetails: function(cmp, placeid) {
+        let labels = {
+            SELECTED_ADDRESS : $A.get("$Label.c.Selected_Address"),
+            CONTACT_ADMIN : $A.get("$Label.c.Please_contact_your_admin"),
+            API_UNKNOWN_ERROR : $A.get("$Label.c.API_Unknown_Error"),
+        }
+
         let params = {
             "placeId" : placeid,
             "sessionToken" : cmp.get("v.UUID")
@@ -226,22 +229,16 @@
                 let placeDetails = JSON.parse(response);
                 
                 if(placeDetails.status === "OK") {
-                    let place = placeDetails.result;
-                    let formattedAddress;
-
-                    place.formatted_address ? formattedAddress = place.formatted_address : formattedAddress = place.name;
-                    cmp.set('v.location', formattedAddress);
-
                     // Clear any previously existing address fields with data
                     cmp.set('v.predictions', []);
-                    let fullStreetAddress = '';
                     this.clearAddressFields(cmp);
 
-                    cmp.set("v.placeId", placeid);
-                    
+                    let place = placeDetails.result, fullStreetAddress = "", formattedAddress, componentForm, i, lat, lng;
+                    // Temp variable to store the neighborhood value if 'sublocality_level_1' or 'locality' is empty
+                    let tmpNeighborhood; // Known address use cases - LONDON
+
                     // List of address components and type to check for in the response API JSON
-                    let componentForm = {
-                        premise                     : 'long_name',
+                    componentForm = {
                         street_number               : 'short_name',
                         route                       : 'long_name',
                         locality                    : 'long_name',
@@ -252,11 +249,15 @@
                         country                     : 'long_name',
                         postal_code                 : 'short_name'
                     };
-                    
-                    // Temp variable to store the neighborhood value if 'sublocality_level_1' or 'locality' is empty
-                    let tmpNeighborhood; // Known address use cases - LONDON
-                
-                    for (let i = 0; i < place.address_components.length; i++) {
+                    cmp.set("v.placeId", placeid);
+
+                    // Premise was removed from the Place Details API
+                    if(place.types.includes("establishment")) {
+                        fullStreetAddress = place.name + "\n";
+                        cmp.set("v.premise", place.name);
+                    }
+
+                    for (i = 0; i < place.address_components.length; i++) {
                         let addressType = place.address_components[i].types[0];
                         
                         if (componentForm[addressType]) {
@@ -264,17 +265,11 @@
                             
                             if(addressType == "sublocality_level_1" || addressType == "locality") {
                                 cmp.set("v.locality", val);
-                            }
-                            else if(addressType == "neighborhood") {
+                            } else if(addressType == "neighborhood") {
                                 tmpNeighborhood = val;
-                            }
-                            else {
+                            } else {
                                 cmp.set("v." + addressType, val);
-
-                                if(addressType == "premise") {
-                                    fullStreetAddress += val + "\n";
-                                }
-                                else if(addressType == "street_number" || addressType == "route") {
+                                if(addressType == "street_number" || addressType == "route") {
                                     fullStreetAddress += val + " ";
                                 }
                             }
@@ -285,19 +280,22 @@
                         cmp.set("v.locality", tmpNeighborhood);
                     }
 
+                    formattedAddress = place.formatted_address ? place.formatted_address : place.name;
+                    lat = place.geometry.location.lat;
+                    lng = place.geometry.location.lng;
+
+                    cmp.set('v.location', formattedAddress);
                     cmp.set("v.formattedAddress", formattedAddress);
                     cmp.set("v.fullStreetAddress", fullStreetAddress);
-                    cmp.set("v.latitude", place.geometry.location.lat);
-                    cmp.set("v.longitude", place.geometry.location.lng);
+                    cmp.set("v.latitude", lat);
+                    cmp.set("v.longitude", lng);
 
-                    this.showMap(cmp, place.geometry.location.lat, place.geometry.location.lng, 'Selected Address', formattedAddress);
+                    this.showMap(cmp, lat, lng, labels.SELECTED_ADDRESS, formattedAddress);
                     cmp.set("v.locationSelected", true);
-                }
-                else if(placeDetails.error_message) { // If an error message is returned
-                    cmp.set("v.apiError", placeDetails.error_message + " Please contact the admin.");
-                }
-                else {
-                    cmp.set("v.apiError", "Failed to get response with Google Places API key. Unknown error.");
+                } else if(placeDetails.error_message) { // If an error message is returned
+                    cmp.set("v.apiError", placeDetails.error_message + " " + labels.CONTACT_ADMIN);
+                } else {
+                    cmp.set("v.apiError", labels.API_UNKNOWN_ERROR);
                 }
             },
             params
@@ -319,7 +317,26 @@
         cmp.set("v.country", null);
         cmp.set("v.formattedAddress", null);
     },
+    checkValidFilter : function(cmp) {
+        const labels = {
+            COUNTRY_FILTER_LIMIIT : $A.get("$Label.c.Country_Filter_Limit"),
+            COUNTRY_FILTER_FORMAT : $A.get("$Label.c.Country_Filter_Format"),
+        }
+        const countryFilters = cmp.get("v.countryFilters");
+        if(countryFilters != '' && countryFilters != null) {
+            let countryFiltersArr = countryFilters.split(",");
 
+            if(countryFiltersArr.length > 5) {
+                cmp.set("v.apiError", labels.COUNTRY_FILTER_LIMIIT);
+            } else {
+                countryFiltersArr.forEach(country => {
+                    if(country.length != 2) {
+                        cmp.set("v.apiError", labels.COUNTRY_FILTER_FORMAT);
+                    }
+                })
+            }
+        }
+    },
     // UUID Generator - https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
     generateUUID : function() { // Public Domain/MIT
         let d = new Date().getTime();

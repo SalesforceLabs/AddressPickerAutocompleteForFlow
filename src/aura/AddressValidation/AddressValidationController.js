@@ -1,11 +1,4 @@
 /*
- * Copyright (c) 2020, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- */
-
- /*
     Author:         Derrick Vuong
     Company:        Salesforce
     Description:    src/aura/AddressValidation/AddressValidationController.js
@@ -42,6 +35,7 @@
 ({
     doInit : function(cmp, event, helper) {
         helper.setTitle(cmp);
+        helper.checkValidFilter(cmp);
         helper.setValidation(cmp);
         helper.initialiseMapData(cmp, helper);
     },
