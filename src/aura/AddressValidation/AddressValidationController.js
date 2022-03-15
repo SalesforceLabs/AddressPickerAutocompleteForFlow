@@ -27,6 +27,8 @@
                             - Cleaned up init methods into helper classes
 
     18/10/19    DV          - Split 'Required' into 'Search Required' and 'Detailed Address Fields Required'
+
+    15/03/22    KK          - Added dynamically making address details/county fields required (=red asteriks sshows) if option is set in Flow
           
    TODO:
     1. Input for country restrictions(?)
@@ -38,6 +40,25 @@
         helper.checkValidFilter(cmp);
         helper.setValidation(cmp);
         helper.initialiseMapData(cmp, helper);
+
+        
+        // set address fields as required if configured as such in Flow
+        let fieldsRequired = cmp.get("v.fieldsRequired"); // Flow attribute "Detailed Address Fields Required"
+
+        if(fieldsRequired) {
+            
+            // if the address fields are shown while all fields are required, they're mandatory as well
+            if(cmp.get("v.showAddressFields")) {
+                let divFullAddress = cmp.find('fullAddress');
+                divFullAddress.set('v.required', true);
+            }
+
+            // if county field is shown while all fields are required, it's mandatory as well
+            if(cmp.get("v.showCountyField")) {
+                let divCounty = cmp.find('countyInput');
+                divCounty.set('v.required', true);
+            }
+        }
     },
     /* When typing the search text in input field */
     onAddressInput : function(cmp, event, helper) {
