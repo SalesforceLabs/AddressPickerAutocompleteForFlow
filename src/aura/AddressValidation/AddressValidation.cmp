@@ -29,6 +29,7 @@
     <aura:attribute name="showAddressFields" type="Boolean" access="global" default="true" required="true" />
     <aura:attribute name="showCountyField" type="Boolean" access="global" default="false" />
     <aura:attribute name="showMap" type="Boolean" access="global" default="true" required="true" />
+    <aura:attribute name="showGeolocation" type="Boolean" access="global" default="false" required="true" />
     <aura:attribute name="addressLabel" type="String" access="global" default="" />
 
     
@@ -142,6 +143,10 @@
                                         />
                 <aura:if isTrue="{!v.showCountyField == true}">
                     <lightning:input aura:id="countyInput" type="text" label="{!$Label.c.County}" placeholder="County" value="{!v.administrative_area_level_2}" class="slds-p-bottom_small" />
+                </aura:if>
+                <aura:if isTrue="{!v.showGeolocation == true}">
+                    <lightning:input aura:id="latitudeInput" type="text" label="{!$Label.c.Latitude}" placeholder="Latitude" value="{!v.currentLatitude}" class="slds-p-bottom_small" disabled="true" />
+                    <lightning:input aura:id="longitudeInput" type="text" label="{!$Label.c.Longitude}" placeholder="Longitude" value="{!v.currentLongitude}" class="slds-p-bottom_small" disabled="true" />
                 </aura:if>
             </lightning:layoutItem>
         </aura:if>

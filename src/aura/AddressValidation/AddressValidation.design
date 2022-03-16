@@ -15,6 +15,8 @@
                         description="Show the editable county field" />
     <design:attribute name="showMap" label="Show Map" 
                         description="Show the map component for current location and chosen location" />
+    <design:attribute name="showGeolocation" label="Show Geolocation (latitude and longitude)" 
+                        description="Show the latitude and longitude fields" />
     <design:attribute name="isRequired" label="Search Required" description="If true, the user will need to search and select a value before being able to proceed" />
     <design:attribute name="fieldsRequired" label="Detailed Address Fields Required"
                         description="If true, the user will need to have all the address fields populated to proceed.

@@ -5,8 +5,9 @@
    Date/Time:      5/21/2019, 1:35:56 PM
 
    History:
-   When        Who          What
-                            
+    When        Who         What
+    15/03/22    KK          - Added setting currentLatitude/Longitude when search is successful to display them if showGeolocation is enabled
+                         
    TODO:
    
  */
@@ -289,6 +290,10 @@
                     cmp.set("v.fullStreetAddress", fullStreetAddress);
                     cmp.set("v.latitude", lat);
                     cmp.set("v.longitude", lng);
+                    
+                    //set current values to display the correct Lat/Lng if these fields are shown
+                    cmp.set("v.currentLatitude", lat);
+                    cmp.set("v.currentLongitude", lng);
 
                     this.showMap(cmp, lat, lng, labels.SELECTED_ADDRESS, formattedAddress);
                     cmp.set("v.locationSelected", true);

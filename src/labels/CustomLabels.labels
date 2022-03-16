@@ -57,6 +57,22 @@
         <value>Current Location</value>
     </labels>
     <labels>
+        <fullName>Latitude</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Latitude</shortDescription>
+        <value>Latitude</value>
+    </labels>
+    <labels>
+        <fullName>Longitude</fullName>
+        <categories>Address,Picker,Address Picker</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Longitude</shortDescription>
+        <value>Longitude</value>
+    </labels>
+    <labels>
         <fullName>Default_Address</fullName>
         <categories>Address,Picker,Address Picker</categories>
         <language>en_US</language>
