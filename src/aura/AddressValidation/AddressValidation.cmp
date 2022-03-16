@@ -29,6 +29,8 @@
     <aura:attribute name="showAddressFields" type="Boolean" access="global" default="true" required="true" />
     <aura:attribute name="showCountyField" type="Boolean" access="global" default="false" />
     <aura:attribute name="showMap" type="Boolean" access="global" default="true" required="true" />
+    <aura:attribute name="addressLabel" type="String" access="global" default="" />
+
     
     <!-- Address Input/Output Attributes -->
     <aura:attribute name="placeId" type="String" access="global" />
@@ -126,6 +128,7 @@
             <!-- Size is 12 if region is small or undetermined, or if region is medium/large and map is off, otherwise it's 6 -->
             <lightning:layoutItem padding="horizontal-medium" size="{!or(or(v.width == 'SMALL', v.width == null), and(or(v.width == 'MEDIUM', v.width == 'LARGE'), v.showMap == false)) ? 12 : 6}">
                 <lightning:inputAddress aura:id="fullAddress"
+                                        addressLabel="{!v.addressLabel}"
                                         streetLabel="{!$Label.c.Street}"
                                         cityLabel="{!$Label.c.City}"
                                         countryLabel="{!$Label.c.Country}"
