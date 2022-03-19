@@ -53,6 +53,8 @@
     
     <!-- Handlers -->
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.currentLatitude}" action="{!c.latitudeChange}"/>
+    <aura:handler name="change" value="{!v.currentLongitude}" action="{!c.longitudeChange}"/>
     
     <lightning:flexipageRegionInfo width="{!v.width}"/>
     
@@ -145,8 +147,8 @@
                     <lightning:input aura:id="countyInput" type="text" label="{!$Label.c.County}" placeholder="County" value="{!v.administrative_area_level_2}" class="slds-p-bottom_small" />
                 </aura:if>
                 <aura:if isTrue="{!v.showGeolocation == true}">
-                    <lightning:input aura:id="latitudeInput" type="text" label="{!$Label.c.Latitude}" placeholder="Latitude" value="{!v.currentLatitude}" class="slds-p-bottom_small" disabled="true" />
-                    <lightning:input aura:id="longitudeInput" type="text" label="{!$Label.c.Longitude}" placeholder="Longitude" value="{!v.currentLongitude}" class="slds-p-bottom_small" disabled="true" />
+                    <lightning:input aura:id="latitudeInput" type="text" label="{!$Label.c.Latitude}" placeholder="Latitude" value="{!v.currentLatitude}" class="slds-p-bottom_small" /> 
+                    <lightning:input aura:id="longitudeInput" type="text" label="{!$Label.c.Longitude}" placeholder="Longitude" value="{!v.currentLongitude}" class="slds-p-bottom_small" />
                 </aura:if>
             </lightning:layoutItem>
         </aura:if>

@@ -28,7 +28,9 @@
 
     18/10/19    DV          - Split 'Required' into 'Search Required' and 'Detailed Address Fields Required'
 
-    15/03/22    KK          - Added dynamically making address details/county fields required (=red asteriks sshows) if option is set in Flow
+    15/03/22    KK          - Added dynamically making address details/county fields required (=red asteriks shows) if option is set in Flow
+
+    19/03/22    KK          - Added ability to change latitude/longitude by manually entering into these fields. This also triggers a map update
           
    TODO:
     1. Input for country restrictions(?)
@@ -104,4 +106,14 @@
         
         helper.getPlaceDetails(cmp, placeid);
     },
+    
+    latitudeChange : function(cmp, event, helper) {
+         /* Manages changes to the latitude.*/
+        helper.geolocationChange(cmp);
+    },
+
+    longitudeChange : function(cmp, event, helper) {
+        /* Manages changes to the longitude.*/
+        helper.geolocationChange(cmp);
+    }
 })

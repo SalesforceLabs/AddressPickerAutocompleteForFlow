@@ -7,7 +7,9 @@
    History:
     When        Who         What
     15/03/22    KK          - Added setting currentLatitude/Longitude when search is successful to display them if showGeolocation is enabled
-                         
+
+    15/03/22    KK          - Added updating the map when geolocation is changed by editing the latitude/longitude fields
+
    TODO:
    
  */
@@ -353,5 +355,25 @@
             d = Math.floor(d / 16);
             return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
+    },
+
+    geolocationChange : function(cmp) {
+         /* Updates the pin on the map after a geolocation change.*/
+        let labels = {
+            SELECTED_ADDRESS : $A.get("$Label.c.Selected_Address"),
+            DEFAULT_ADDRESS : $A.get("$Label.c.Default_Address")
+        }
+
+        let lat = cmp.get("v.currentLatitude");
+        let lng = cmp.get("v.currentLongitude");
+        let formattedAddress = cmp.get("v.formattedAddress");
+
+        if(formattedAddress) {
+            this.showMap(cmp, lat, lng, labels.SELECTED_ADDRESS, formattedAddress);
+        }
+        else {
+            this.showMap(cmp, lat, lng, labels.DEFAULT_ADDRESS);
+        }
     }
+
 })
