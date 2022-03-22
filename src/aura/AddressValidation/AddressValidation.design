@@ -1,4 +1,7 @@
 <design:component label="Address Picker Autocomplete for Flow">
+    <design:attribute name="addressLabel" label="Address Details Section Label"
+                        description="Label shown between above address details section (i.e., below the search field).
+                                    Recommended if you enable 'Detailed Address Fields Required' to avoid an empty line with red asterisk." />
     <design:attribute name="title" label="Title (DO NOT USE. LEAVE EMPTY)"
                         description="To update the title text of the component use the 'Component Title Label' field instead. 
                                     This is kept for retrospective purposes of older versions prior to v1.8" />
@@ -12,8 +15,12 @@
                         description="Show the editable county field" />
     <design:attribute name="showMap" label="Show Map" 
                         description="Show the map component for current location and chosen location" />
+    <design:attribute name="showGeolocation" label="Show Geolocation (latitude and longitude)" 
+                        description="Show the latitude and longitude fields" />
     <design:attribute name="isRequired" label="Search Required" description="If true, the user will need to search and select a value before being able to proceed" />
-    <design:attribute name="fieldsRequired" label="Detailed Address Fields Required" description="If true, the user will need to have all the address fields populated to proceed" />
+    <design:attribute name="fieldsRequired" label="Detailed Address Fields Required"
+                        description="If true, the user will need to have all the address fields populated to proceed.
+                                    If true, it's recommended to set a 'Address Details Section Label' to avoid an empty line with red asteriks." />
     
     <design:attribute name="placeId" label="Place ID" 
                         description="The Google API Place Id. This will take precedence over Longitude and Latitude Settings" />

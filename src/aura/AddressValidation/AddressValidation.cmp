@@ -29,6 +29,9 @@
     <aura:attribute name="showAddressFields" type="Boolean" access="global" default="true" required="true" />
     <aura:attribute name="showCountyField" type="Boolean" access="global" default="false" />
     <aura:attribute name="showMap" type="Boolean" access="global" default="true" required="true" />
+    <aura:attribute name="showGeolocation" type="Boolean" access="global" default="false" required="true" />
+    <aura:attribute name="addressLabel" type="String" access="global" default="" />
+
     
     <!-- Address Input/Output Attributes -->
     <aura:attribute name="placeId" type="String" access="global" />
@@ -50,6 +53,8 @@
     
     <!-- Handlers -->
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.currentLatitude}" action="{!c.latitudeChange}"/>
+    <aura:handler name="change" value="{!v.currentLongitude}" action="{!c.longitudeChange}"/>
     
     <lightning:flexipageRegionInfo width="{!v.width}"/>
     
@@ -126,6 +131,7 @@
             <!-- Size is 12 if region is small or undetermined, or if region is medium/large and map is off, otherwise it's 6 -->
             <lightning:layoutItem padding="horizontal-medium" size="{!or(or(v.width == 'SMALL', v.width == null), and(or(v.width == 'MEDIUM', v.width == 'LARGE'), v.showMap == false)) ? 12 : 6}">
                 <lightning:inputAddress aura:id="fullAddress"
+                                        addressLabel="{!v.addressLabel}"
                                         streetLabel="{!$Label.c.Street}"
                                         cityLabel="{!$Label.c.City}"
                                         countryLabel="{!$Label.c.Country}"
@@ -139,6 +145,10 @@
                                         />
                 <aura:if isTrue="{!v.showCountyField == true}">
                     <lightning:input aura:id="countyInput" type="text" label="{!$Label.c.County}" placeholder="County" value="{!v.administrative_area_level_2}" class="slds-p-bottom_small" />
+                </aura:if>
+                <aura:if isTrue="{!v.showGeolocation == true}">
+                    <lightning:input aura:id="latitudeInput" type="text" label="{!$Label.c.Latitude}" placeholder="Latitude" value="{!v.currentLatitude}" class="slds-p-bottom_small" /> 
+                    <lightning:input aura:id="longitudeInput" type="text" label="{!$Label.c.Longitude}" placeholder="Longitude" value="{!v.currentLongitude}" class="slds-p-bottom_small" />
                 </aura:if>
             </lightning:layoutItem>
         </aura:if>

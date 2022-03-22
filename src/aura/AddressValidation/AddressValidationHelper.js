@@ -5,8 +5,11 @@
    Date/Time:      5/21/2019, 1:35:56 PM
 
    History:
-   When        Who          What
-                            
+    When        Who         What
+    15/03/22    KK          - Added setting currentLatitude/Longitude when search is successful to display them if showGeolocation is enabled
+
+    15/03/22    KK          - Added updating the map when geolocation is changed by editing the latitude/longitude fields
+
    TODO:
    
  */
@@ -289,6 +292,10 @@
                     cmp.set("v.fullStreetAddress", fullStreetAddress);
                     cmp.set("v.latitude", lat);
                     cmp.set("v.longitude", lng);
+                    
+                    //set current values to display the correct Lat/Lng if these fields are shown
+                    cmp.set("v.currentLatitude", lat);
+                    cmp.set("v.currentLongitude", lng);
 
                     this.showMap(cmp, lat, lng, labels.SELECTED_ADDRESS, formattedAddress);
                     cmp.set("v.locationSelected", true);
@@ -348,5 +355,25 @@
             d = Math.floor(d / 16);
             return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
+    },
+
+    geolocationChange : function(cmp) {
+         /* Updates the pin on the map after a geolocation change.*/
+        let labels = {
+            SELECTED_ADDRESS : $A.get("$Label.c.Selected_Address"),
+            DEFAULT_ADDRESS : $A.get("$Label.c.Default_Address")
+        }
+
+        let lat = cmp.get("v.currentLatitude");
+        let lng = cmp.get("v.currentLongitude");
+        let formattedAddress = cmp.get("v.formattedAddress");
+
+        if(formattedAddress) {
+            this.showMap(cmp, lat, lng, labels.SELECTED_ADDRESS, formattedAddress);
+        }
+        else {
+            this.showMap(cmp, lat, lng, labels.DEFAULT_ADDRESS);
+        }
     }
+
 })
